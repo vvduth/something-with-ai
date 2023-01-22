@@ -17,12 +17,34 @@ const CreatePost = () => {
 
   const handleSubmit = () => {};
   const handleChange = (e) => {
-    setForm({...form, [e.target.name]: e.target.value})
+    setForm({ ...form, [e.target.name]: e.target.value });
   };
-  const generateImage = () => {};
+  const generateImage = async () => {
+    if (form.prompt) {
+      try {
+        setGeneratingImg(true);
+        const res = await fetch("http://localhost:8080/api/v1/dalle", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt: form.prompt }),
+        });
+        console.log(res)
+        const data = await res.json();
+        setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
+      } catch (e) {
+        alert(e) 
+      } finally {
+        setGeneratingImg(false) ; 
+      }
+    } else {
+      alert("Please type something")
+    }
+  };
   const handleSupriseMe = () => {
-    const randomPromt = getRandomPrompt(form.prompt)
-    setForm({...form, prompt: randomPromt})
+    const randomPromt = getRandomPrompt(form.prompt);
+    setForm({ ...form, prompt: randomPromt });
   };
   return (
     <section className="max-w-7xl mx-auto">
@@ -84,9 +106,13 @@ const CreatePost = () => {
         </div>
         <div className="mt-10">
           <p className="mt-2 text-[#666e75] text-[14px]">
-            Once you have the image, you can share it with other sin the community
+            Once you have the image, you can share it with other sin the
+            community
           </p>
-          <button type="submit" className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center">
+          <button
+            type="submit"
+            className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+          >
             Share to community
           </button>
         </div>
