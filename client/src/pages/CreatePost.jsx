@@ -15,7 +15,31 @@ const CreatePost = () => {
   const [generatingImg, setGeneratingImg] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {};
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (form.prompt && form.photo) {
+      setLoading(true);
+      try {
+        setLoading(true);
+        const res = await fetch("http://localhost:8080/api/v1/post", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        });
+
+        await res.json() ;
+        navigate('/') ;
+      } catch (err) {
+        alert(err)
+      } finally {
+        setLoading(false)  
+      }
+    } else {
+      alert("Enter something")
+    }
+  };
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -30,16 +54,16 @@ const CreatePost = () => {
           },
           body: JSON.stringify({ prompt: form.prompt }),
         });
-        console.log(res)
+        console.log(res);
         const data = await res.json();
         setForm({ ...form, photo: `data:image/jpeg;base64,${data.photo}` });
       } catch (e) {
-        alert(e) 
+        alert(e);
       } finally {
-        setGeneratingImg(false) ; 
+        setGeneratingImg(false);
       }
     } else {
-      alert("Please type something")
+      alert("Please type something");
     }
   };
   const handleSupriseMe = () => {
@@ -113,7 +137,7 @@ const CreatePost = () => {
             type="submit"
             className="mt-3 text-white bg-[#6469ff] font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center"
           >
-            Share to community
+            {loading ? 'Sharing...' : 'Share with the Community'}
           </button>
         </div>
       </form>

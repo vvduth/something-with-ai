@@ -26,3 +26,7 @@ dist-ssr
 *pass=51teIun9SWiX8ods
 *usernam: admin
 .env
+.env
+.env.example
+.env.local
+.env.staging
